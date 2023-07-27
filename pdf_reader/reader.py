@@ -9,7 +9,7 @@ TESSERACT_OPTIONS = '-l eng+pol'
 
 def pdf_to_text_tesseract(pdf_bytes: bytes, tesseract_options=TESSERACT_OPTIONS) -> str:
     with TemporaryDirectory() as tempdir:
-        pdf_pages = convert_from_bytes(pdf_bytes, fmt='png', output_folder=tempdir)
+        pdf_pages = convert_from_bytes(pdf_bytes, fmt='png', output_folder=tempdir, dpi=300)
         image_file_list = []
         text = ''
 
@@ -27,7 +27,7 @@ def pdf_to_text_tesseract(pdf_bytes: bytes, tesseract_options=TESSERACT_OPTIONS)
     
 
 if __name__ == '__main__':
-    pdf_file = open('tests/pdf-sample.pdf', 'rb')
+    pdf_file = open('tests/sample.pdf', 'rb')
     pdf_bytes = pdf_file.read()
     text = pdf_to_text_tesseract(pdf_bytes)
     print(text)

@@ -1,31 +1,33 @@
 from pdf_reader import reader
 
 pdf_text = """
-A Simple PDF File
+Adobe Acrobat PDF Files
 
-This is a small demonstration .pdf file -
+Adobe® Portable Document Format (PDF) is a universal file format that preserves all
+of the fonts, formatting, colours and graphics of any source document, regardless of
+the application and platform used to create it.
 
-just for use in the Virtual Mechanics tutorials. More text. And more
-text. And more text. And more text. And more text.
+Adobe PDF is an ideal format for electronic document distribution as it overcomes the
+problems commonly encountered with electronic file sharing.
 
-And more text. And more text. And more text. And more text. And more
-text. And more text. Boring, zzzzz. And more text. And more text. And
-more text. And more text. And more text. And more text. And more text.
-And more text. And more text.
+¢ Anyone, anywhere can open a PDF file. All you need is the free Adobe Acrobat
+Reader. Recipients of other file formats sometimes can't open files because they
+don't have the applications used to create the documents.
 
-And more text. And more text. And more text. And more text. And more
-text. And more text. And more text. Even more. Continued on page 2...
-Simple PDF File 2
+¢ PDF files always print correctly on any printing device.
+¢ PDF files always display exactly as created, regardless of fonts, software, and
+operating systems. Fonts, and graphics are not lost due to platform, software, and
 
-..continued from page 1. Yet more text. And more text. And more text.
-And more text. And more text. And more text. And more text. And more
-text. Oh, how boring typing this stuff. But not as boring as watching
-paint dry. And more text. And more text. And more text. And more text.
-Boring. More, a little more text. The end, and just as well.
+version incompatibilities.
+
+* The free Acrobat Reader is easy to download and can be freely distributed by
+anyone.
+
+* Compact PDF files are smaller than their source files and download a
+page at a time for fast display on the Web.
 """
 
 
 def test_pdfreader():
-    pdf_contents: bytes = open('tests/test_pdf_file.pdf', 'rb').read()
-    pdf_correct_text: str = open('tests/test_pdf_file.txt', 'r').read()
-    assert reader.pdf_to_text_tesseract(pdf_contents) == pdf_correct_text.strip()
+    pdf_contents: bytes = open('tests/pdf-sample.pdf', 'rb').read()
+    assert reader.pdf_to_text_tesseract(pdf_contents) == pdf_text.strip()

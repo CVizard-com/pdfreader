@@ -51,7 +51,7 @@ async def upload_pdf_file(pdf_file: UploadFile = Form(...), id: str = Form(...))
     pdf_contents = await pdf_file.read()
     text = pdf_to_text_tesseract(pdf_contents)
     try:
-        future = kafka.send(topic_name, key=id, value=text.encode('utf-8'))
+        future = kafka.send(topic_name, key=id.encode('utf-8'), value=text.encode('utf-8'))
         metadata = future.get(timeout=10)
         return {"file_id": id}
     except Exception as e:

@@ -18,11 +18,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from kafka import KafkaProducer
 
 
-# bootstrap_servers = os.environ['BOOTSTRAP_SERVERS']
-# topic_name = os.environ['PDF_TEXT_TOPIC']
-
-bootstrap_servers = "localhost:9092"
-topic_name = "pdf-text-topic"
+bootstrap_servers = os.environ['BOOTSTRAP_SERVERS']
+topic_name = os.environ['PDF_TEXT_TOPIC']
 
 
 app = FastAPI()

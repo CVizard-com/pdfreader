@@ -41,10 +41,9 @@ async def kafka_exception_handler(request: Request, exc: KafkaUploadException):
 
 
 @app.post('/api/reader')
-async def upload_pdf_file(pdf_file: UploadFile):
+async def upload_pdf_file(pdf_file: UploadFile, id: str):
     contents = await pdf_file.read()
     text = pdf_to_text_tesseract(contents)
-    id = f"{uuid.uuid4()}"
     try:
         future = kafka.send(topic_name, key=id.encode("utf-8"), value=text.encode('utf-8'))
         metadata = future.get(timeout=10)

@@ -23,7 +23,7 @@ def pdf_to_text_tesseract(pdf_bytes: bytes, tesseract_options=TESSERACT_OPTIONS)
             page_text = pytesseract.image_to_string(Image.open(image_file), config=tesseract_options)
             text += page_text
 
-        return text
+        return text.strip()
     
 
 if __name__ == '__main__':

@@ -26,4 +26,4 @@ Boring. More, a little more text. The end, and just as well.
 
 def test_pdfreader():
     pdf_contents: bytes = open('tests/test_pdf_file.pdf', 'rb').read()
-    assert reader.pdf_to_text_tesseract(pdf_contents) == pdf_text
+    assert reader.pdf_to_text_tesseract(pdf_contents) == pdf_text.strip()

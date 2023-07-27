@@ -8,8 +8,8 @@ from fastapi import (
     Request
     )
 from fastapi.responses import JSONResponse
-from reader import pdf_to_text_tesseract
-from exceptions import KafkaUploadException
+from pdf_reader.reader import pdf_to_text_tesseract
+from pdf_reader.exceptions import KafkaUploadException
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from kafka import KafkaProducer

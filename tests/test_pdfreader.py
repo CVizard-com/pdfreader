@@ -1,4 +1,4 @@
-from pdfreader import pdf_reader
+from pdf_reader import reader
 
 pdf_text = """A Simple PDF File
 
@@ -26,4 +26,4 @@ Boring. More, a little more text. The end, and just as well.
 
 def test_pdfreader():
     pdf_contents: bytes = open('tests/test_pdf_file.pdf', 'rb').read()
-    assert pdf_reader.pdf_to_text_tesseract(pdf_contents) == pdf_text
+    assert reader.pdf_to_text_tesseract(pdf_contents) == pdf_text

@@ -5,7 +5,9 @@ from fastapi import (
     UploadFile, 
     Request, 
     status,
-    Request
+    Request,
+    Body,
+    Form
     )
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
@@ -16,8 +18,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from kafka import KafkaProducer
 
 
-bootstrap_servers = os.environ['BOOTSTRAP_SERVERS']
-topic_name = os.environ['PDF_TEXT_TOPIC']
+# bootstrap_servers = os.environ['BOOTSTRAP_SERVERS']
+# topic_name = os.environ['PDF_TEXT_TOPIC']
+
+bootstrap_servers = "localhost:9092"
+topic_name = "pdf-text-topic"
 
 
 app = FastAPI()
@@ -35,10 +40,6 @@ app.add_middleware(
 kafka = KafkaProducer(bootstrap_servers=bootstrap_servers, api_version=(0, 10))
 
 
-class Body(BaseModel):
-    pdf_file: UploadFile
-    id: str
-
 
 @app.exception_handler(KafkaUploadException)
 async def kafka_exception_handler(request: Request, exc: KafkaUploadException):
@@ -49,9 +50,8 @@ async def kafka_exception_handler(request: Request, exc: KafkaUploadException):
 
 
 @app.post('/api/reader')
-async def upload_pdf_file(request: Request, body: Body):
-    pdf_contents = await body.pdf_file.read()
-    id = body.id
+async def upload_pdf_file(pdf_file: UploadFile = Form(...), id: str = Form(...)):
+    pdf_contents = await pdf_file.read()
     text = pdf_to_text_tesseract(pdf_contents)
     try:
         future = kafka.send(topic_name, key=id.encode("utf-8"), value=text.encode('utf-8'))

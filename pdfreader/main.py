@@ -36,7 +36,7 @@ kafka = KafkaProducer(bootstrap_servers=bootstrap_servers, api_version=(0, 10))
 async def kafka_exception_handler(request: Request, exc: KafkaUploadException):
     return JSONResponse(
         status_code=500,
-        content={"message": f"Something went wrong {exc.name}"},
+        content={"message": f"Something went wrong: {exc.name}"},
     )
 
 
@@ -51,4 +51,4 @@ async def upload_pdf_file(pdf_file: UploadFile):
         return {"file_id": id}
     except Exception as e:
         logging.error(f"could not add event to kafka error has been thrown {e}")
-        raise KafkaUploadException(name="error")
+        raise KafkaUploadException(name=e)

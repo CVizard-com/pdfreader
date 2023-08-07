@@ -7,7 +7,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update \
-  && sudo apt install tesseract-ocr -y \
+  && apt-get -y install netcat poppler-utils tesseract-ocr \
   && apt-get clean
 
 RUN pip install --upgrade pip

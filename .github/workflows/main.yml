@@ -39,6 +39,10 @@ jobs:
     - name: Run with python
       run: |
         uvicorn pdf_reader.main:app --workers 1 --host 0.0.0.0 --port 8081
+      env:
+        BOOTSTRAP_SERVERS: localhost:9092
+        PDF_TEXT_TOPIC: pdf-text
+
 
   docker_build_and_push:
 

@@ -27,7 +27,7 @@ def pdf_to_text_tesseract(pdf_bytes: bytes, tesseract_options=TESSERACT_OPTIONS)
     
 
 if __name__ == '__main__':
-    pdf_file = open('tests/sample.pdf', 'rb')
+    pdf_file = open('cv-kempinski.pdf', 'rb')
     pdf_bytes = pdf_file.read()
     text = pdf_to_text_tesseract(pdf_bytes)
     print(text)

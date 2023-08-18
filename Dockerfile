@@ -19,4 +19,5 @@ COPY ./entrypoint.sh .
 RUN chmod 777 /app/entrypoint.sh \                                              
     && ln -s /app/entrypoint.sh / \
     && chmod +x /app/entrypoint.sh
+EXPOSE 8081
 CMD ["/app/entrypoint.sh"]

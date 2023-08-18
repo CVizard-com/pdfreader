@@ -5,21 +5,26 @@ from fastapi import (
     UploadFile, 
     Request, 
     status,
-    Request
+    Request,
+    Body,
+    Form,
+    Depends
     )
+from pydantic import BaseModel
 from fastapi.responses import JSONResponse
-from pdf_reader import pdf_to_text_tesseract
-from exceptions import KafkaUploadException
+from pdf_reader.reader import pdf_to_text_tesseract
+from pdf_reader.exceptions import KafkaUploadException
 import os
 from fastapi.middleware.cors import CORSMiddleware
-from kafka import KafkaProducer
+from pdf_reader.kafka_producer import create_kafka_producer
+
+
+app = FastAPI()
 
 
 bootstrap_servers = os.environ['BOOTSTRAP_SERVERS']
 topic_name = os.environ['PDF_TEXT_TOPIC']
 
-
-app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -29,26 +34,26 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-kafka = KafkaProducer(bootstrap_servers=bootstrap_servers, api_version=(0, 10))
+
+def get_kafka_producer():
+    return create_kafka_producer(bootstrap_servers)
 
 
 @app.exception_handler(KafkaUploadException)
 async def kafka_exception_handler(request: Request, exc: KafkaUploadException):
     return JSONResponse(
         status_code=500,
-        content={"message": f"Something went wrong {exc.name}"},
+        content={"message": f"Something went wrong: {exc.name}"},
     )
 
 
 @app.post('/api/reader')
-async def upload_pdf_file(pdf_file: UploadFile):
-    contents = await pdf_file.read()
-    text = pdf_to_text_tesseract(contents)
-    id = f"{uuid.uuid4()}"
+async def upload_pdf_file(pdf_file: UploadFile = Form(...), id: str = Form(...), kafka = Depends(get_kafka_producer)):
+    pdf_contents = await pdf_file.read()
+    text = pdf_to_text_tesseract(pdf_contents)
     try:
-        future = kafka.send(topic_name, key=id.encode("utf-8"), value=text.encode('utf-8'))
-        metadata = future.get(timeout=10)
+        future = kafka.send(topic_name, key=id.encode('utf-8'), value=text.encode('utf-8'))
         return {"file_id": id}
     except Exception as e:
         logging.error(f"could not add event to kafka error has been thrown {e}")
-        raise KafkaUploadException(name="error")
+        raise KafkaUploadException(name=e)

@@ -1,9 +1,9 @@
+import io
 import pytesseract
 from pdf2image.pdf2image import convert_from_bytes
 from PIL import Image
 from tempfile import TemporaryDirectory
-
-
+import textract
 TESSERACT_OPTIONS = '-l eng+pol'
 
 
@@ -25,9 +25,20 @@ def pdf_to_text_tesseract(pdf_bytes: bytes, tesseract_options=TESSERACT_OPTIONS)
 
         return text.strip()
     
+def docx_to_text(docx_bytes) -> str:
+    with TemporaryDirectory() as tempdir:
+        docx_path = f'{tempdir}/file.docx'
+        with open(docx_path, 'wb') as docx_file:
+            docx_file.write(docx_bytes)
+
+        fullText = textract.process(docx_path)
+        return fullText.decode('utf-8').strip()
+        
+
 
 if __name__ == '__main__':
-    pdf_file = open('cv-kempinski.pdf', 'rb')
-    pdf_bytes = pdf_file.read()
-    text = pdf_to_text_tesseract(pdf_bytes)
-    print(text)
+    #pdf_file = open('cv-kempinski.pdf', 'rb')
+    with open ('jd.docx', 'rb') as pdf_file:
+        pdf_bytes = pdf_file.read()
+        print(docx_to_text(pdf_bytes))
+   

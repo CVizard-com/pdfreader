@@ -8,3 +8,4 @@ uvicorn==0.22.0
 pytest==7.4.0
 pytest-mock==3.11.1
 httpx==0.24.1
+textract==1.6.5

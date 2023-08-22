@@ -2,6 +2,8 @@ import pytesseract
 from pdf2image.pdf2image import convert_from_bytes
 from PIL import Image
 from tempfile import TemporaryDirectory
+from pypdf import PdfReader
+from io import BytesIO
 
 
 TESSERACT_OPTIONS = '-l eng+pol'
@@ -26,8 +28,19 @@ def pdf_to_text_tesseract(pdf_bytes: bytes, tesseract_options=TESSERACT_OPTIONS)
         return text.strip()
     
 
+def pdf_to_text_pypdf(pdf_bytes: bytes) -> str:
+    with BytesIO(pdf_bytes) as pdf_file:
+        pdf = PdfReader(pdf_file)
+        text = ''
+
+        for page in pdf.pages:
+            text += page.extract_text()
+
+        return text
+    
+
 if __name__ == '__main__':
-    pdf_file = open('cv-kempinski.pdf', 'rb')
+    pdf_file = open('test.pdf', 'rb')
     pdf_bytes = pdf_file.read()
-    text = pdf_to_text_tesseract(pdf_bytes)
+    text = pdf_to_text_pypdf(pdf_bytes)
     print(text)

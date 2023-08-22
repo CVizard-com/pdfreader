@@ -47,15 +47,15 @@ async def kafka_exception_handler(request: Request, exc: KafkaUploadException):
 
 
 @app.post('/api/reader')
-async def upload_pdf_file(file: UploadFile = Form(...), id: str = Form(...), kafka = Depends(get_kafka_producer)):
-    file_extension = file.filename.split('.')[-1]
+async def upload_pdf_file(pdf_file: UploadFile = Form(...), id: str = Form(...), kafka = Depends(get_kafka_producer)):
+    file_extension = pdf_file.filename.split('.')[-1]
     text = ''
 
     if file_extension != 'pdf':
-        contents = await file.read()
+        contents = await pdf_file.read()
         text = docx_to_text(contents)
     else:
-        pdf_contents = await file.read()
+        pdf_contents = await pdf_file.read()
         text = pdf_to_text_tesseract(pdf_contents)
     try:
         future = kafka.send(topic_name, key=id.encode('utf-8'), value=text.encode('utf-8'))

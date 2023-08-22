@@ -23,7 +23,7 @@ def test_upload_pdf_file(mock_create_kafka_producer, monkeypatch):
     response = client.post(
         "/api/reader",
         data={"id": "123"},
-        files={"pdf_file": ("sample.pdf", pdf_contents, "application/pdf")}
+        files={"pdf_file": ("sample.pdf", pdf_contents)}
     )
 
     assert response.status_code == 200

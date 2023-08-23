@@ -4,6 +4,7 @@ from PIL import Image
 from tempfile import TemporaryDirectory
 from pypdf import PdfReader
 from io import BytesIO
+import docx
 
 
 TESSERACT_OPTIONS = '-l eng+pol'
@@ -36,11 +37,19 @@ def pdf_to_text_pypdf(pdf_bytes: bytes) -> str:
         for page in pdf.pages:
             text += page.extract_text()
 
-        return text
+    return text
     
 
-if __name__ == '__main__':
-    pdf_file = open('test.pdf', 'rb')
-    pdf_bytes = pdf_file.read()
-    text = pdf_to_text_pypdf(pdf_bytes)
-    print(text)
+def docx_to_text(docx_bytes: bytes) -> str:
+    with BytesIO(docx_bytes) as doc_stream:
+        doc = docx.Document(doc_stream)
+        text = []
+
+        for paragraph in doc.paragraphs:
+            text.append(paragraph.text)
+
+    return '\n'.join(text)
+
+
+with open('text.txt', 'w') as f:
+    f.write(docx_to_text(open('tests/sample.docx', 'rb').read()))

@@ -50,12 +50,13 @@ async def kafka_exception_handler(request: Request, exc: KafkaUploadException):
 @app.post('/api/reader')
 async def upload_pdf_file(file: UploadFile = Form(...), id: str = Form(...), kafka = Depends(get_kafka_producer)):
     contents = await file.read()
-    if file.filename.endswith('.pdf'):
+    file_extension = file.filename.split('.')[-1]
+    if file_extension == 'pdf':
         text_ocr = pdf_to_text_tesseract(contents)
         text_pypdf = pdf_to_text_pypdf(contents)
         text = text_pypdf if len(text_pypdf) > len(text_ocr)//2 else text_ocr
         
-    elif file.filename.endswith('.docx'):
+    elif file_extension == 'docx':
         text = docx_to_text(contents)
         
     else:

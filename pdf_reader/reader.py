@@ -29,17 +29,6 @@ def pdf_to_text_tesseract(pdf_bytes: bytes, tesseract_options=TESSERACT_OPTIONS)
         return text.strip()
     
 
-def pdf_to_text_pypdf(pdf_bytes: bytes) -> str:
-    with BytesIO(pdf_bytes) as pdf_file:
-        pdf = PdfReader(pdf_file)
-        text = ''
-
-        for page in pdf.pages:
-            text += page.extract_text()
-
-    return text
-    
-
 def docx_to_text(docx_bytes: bytes) -> str:
     with BytesIO(docx_bytes) as doc_stream:
         doc = docx.Document(doc_stream)
@@ -49,7 +38,3 @@ def docx_to_text(docx_bytes: bytes) -> str:
             text.append(paragraph.text)
 
     return '\n'.join(text)
-
-
-with open('text.txt', 'w') as f:
-    f.write(docx_to_text(open('tests/sample.docx', 'rb').read()))

@@ -4,15 +4,13 @@ from fastapi import (
     FastAPI,
     UploadFile, 
     Request, 
-    status,
     Request,
-    Body,
     Form,
     Depends
     )
 from pydantic import BaseModel
 from fastapi.responses import JSONResponse
-from pdf_reader.reader import pdf_to_text_tesseract, pdf_to_text_pypdf, docx_to_text
+from pdf_reader.reader import pdf_to_text_tesseract, docx_to_text
 from pdf_reader.exceptions import KafkaUploadException
 import os
 from fastapi.middleware.cors import CORSMiddleware
@@ -51,11 +49,10 @@ async def kafka_exception_handler(request: Request, exc: KafkaUploadException):
 async def upload_pdf_file(file: UploadFile = Form(...), id: str = Form(...), kafka = Depends(get_kafka_producer)):
     contents = await file.read()
     file_extension = file.filename.split('.')[-1]
+    
     if file_extension == 'pdf':
-        text_ocr = pdf_to_text_tesseract(contents)
-        text_pypdf = pdf_to_text_pypdf(contents)
-        text = text_pypdf if len(text_pypdf) > len(text_ocr)//2 else text_ocr
-        
+        text = pdf_to_text_tesseract(contents)
+
     elif file_extension == 'docx':
         text = docx_to_text(contents)
         
